@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organograma — Agropecuária Lerosa</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f3;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b6b6b;
+  --hint: #999;
+  --border: #e2e0db;
+  --dir: #2c3e50; --dir-light: #eaf0f5;
+  --agr: #0f6e56; --agr-light: #e1f5ee; --agr-mid: #c8ead9;
+  --pec: #854f0b; --pec-light: #faeeda; --pec-mid: #f5e0b8;
+  --aut: #185fa5; --aut-light: #e6f1fb; --aut-mid: #c5ddf5;
+  --adm: #534ab7; --adm-light: #eeedfe; --adm-mid: #d8d5f7;
+  --sup: #993556; --sup-light: #fbeaf0; --sup-mid: #f4cedd;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-hover: 0 2px 8px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.06);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header { text-align: center; padding: 2.5rem 1rem 1.5rem; }
+.header h1 { font-size: 1.6rem; font-weight: 700; color: var(--dir); letter-spacing: -0.5px; }
+.header p { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+
+.stats { display: flex; justify-content: center; gap: 1.5rem; padding: 0 1rem 2rem; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat-num { font-size: 1.5rem; font-weight: 700; color: var(--dir); }
+.stat-label { font-size: 0.7rem; color: var(--hint); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.org { max-width: 1100px; margin: 0 auto; padding: 0 1rem 3rem; }
+
+.level { margin-bottom: 1.5rem; }
+.level-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--hint); font-weight: 600; margin-bottom: 0.5rem; padding-left: 4px; }
+
+.director-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--dir); color: #fff; border-radius: 12px;
+  padding: 1.2rem 1.5rem; max-width: 400px; margin: 0 auto 0.5rem;
+  box-shadow: var(--shadow);
+}
+.director-card .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+.director-card .info h3 { font-size: 1rem; font-weight: 600; }
+.director-card .info span { font-size: 0.75rem; opacity: 0.7; }
+
+.connector-line { width: 2px; height: 20px; background: var(--border); margin: 0 auto; }
+.connector-h { display: flex; justify-content: center; align-items: flex-start; position: relative; }
+.connector-h::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 2px; background: var(--border); }
+
+.units { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .units { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .units { grid-template-columns: 1fr 1fr; } }
+
+.unit { border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; background: var(--card); }
+.unit:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.unit-header { padding: 0.8rem 0.75rem; display: flex; align-items: center; gap: 8px; }
+.unit-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.unit-header h4 { font-size: 0.8rem; font-weight: 600; }
+.unit-header span { font-size: 0.65rem; color: var(--muted); display: block; }
+.unit-body { padding: 0 0.75rem 0.75rem; }
+.person { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; margin-bottom: 4px; transition: background 0.15s; }
+.person:hover { background: rgba(0,0,0,0.03); }
+.person-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 600; flex-shrink: 0; color: #fff; }
+.person-info { min-width: 0; }
+.person-name { font-size: 0.75rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.person-role { font-size: 0.62rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.person-badge { font-size: 0.55rem; font-weight: 600; padding: 1px 5px; border-radius: 4px; margin-left: auto; flex-shrink: 0; }
+
+.support-box { border: 1.5px dashed var(--border); border-radius: 8px; padding: 6px 8px; margin-top: 6px; }
+.support-label { font-size: 0.6rem; color: var(--hint); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
+
+.flow-bar { background: var(--bg); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+.flow-bar .flow-title { font-size: 0.6rem; font-weight: 600; color: var(--hint); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.flow-steps { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+.flow-step { font-size: 0.6rem; color: var(--muted); background: var(--card); padding: 2px 6px; border-radius: 4px; border: 0.5px solid var(--border); }
+.flow-arrow { font-size: 0.6rem; color: var(--hint); }
+
+.footer { text-align: center; padding: 1rem; font-size: 0.65rem; color: var(--hint); border-top: 1px solid var(--border); margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Organograma Estrutural</h1>
+  <p>Agropecuária Lerosa — Abril/2026</p>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">133</div><div class="stat-label">Colaboradores</div></div>
+  <div class="stat"><div class="stat-num">5</div><div class="stat-label">Unidades</div></div>
+  <div class="stat"><div class="stat-num">13</div><div class="stat-label">Lideranças</div></div>
+</div>
+
+<div class="org">
+
+  <div class="level">
+    <div class="level-label">Diretoria</div>
+    <div class="director-card">
+      <div class="avatar">DG</div>
+      <div class="info"><h3>Diretor geral</h3><span>Estratégia, plano de safra, orçamento, metas</span></div>
+    </div>
+  </div>
+
+  <div class="connector-line"></div>
+
+  <div class="level">
+    <div class="level-label">Unidades de negócio</div>
+    <div class="units">
+
+      <!-- AGRÍCOLA -->
+      <div class="unit" style="border-top: 3px solid var(--agr)">
+        <div class="unit-header">
+          <div class="unit-dot" style="background:var(--agr)"></div>
+          <div><h4>Unidade agrícola</h4><span>Gerente de operações agrícolas</span></div>
+        </div>
+        <div class="unit-body">
+          <div class="person"><div class="person-avatar" style="background:var(--agr)">CO</div><div class="person-info"><div class="person-name">Coordenador de operações</div><div class="person-role">Preparo, plantio, colheita, sistematização</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--agr)">LF</div><div class="person-info"><div class="person-name">Líder fertilidade</div><div class="person-role">Tratos sólidos, composto, pátio</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--agr)">LA</div><div class="person-info"><div class="person-name">Líder aplicações</div><div class="person-role">Pulverização, adubação, qualidade</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--agr)">LI</div><div class="person-info"><div class="person-name">Líder instrutor</div><div class="person-role">Treinamento, padronização, suporte</div></div></div>
+          <div class="support-box">
+            <div class="support-label">Suporte / controle</div>
+            <div class="person"><div class="person-avatar" style="background:var(--agr);opacity:0.6">CA</div><div class="person-info"><div class="person-name">Analista de controle</div><div class="person-role">Dados, indicadores, visibilidade</div></div></div>
+          </div>
+          <div class="flow-bar">
+            <div class="flow-title">Fluxo de decisão</div>
+            <div class="flow-steps">
+              <span class="flow-step">Campo</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Líderes</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Controle</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Gerente</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Diretor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PECUÁRIA -->
+      <div class="unit" style="border-top: 3px solid var(--pec)">
+        <div class="unit-header">
+          <div class="unit-dot" style="background:var(--pec)"></div>
+          <div><h4>Unidade pecuária</h4><span>José Antônio — Responsável</span></div>
+        </div>
+        <div class="unit-body">
+          <div class="person"><div class="person-avatar" style="background:var(--pec)">CP</div><div class="person-info"><div class="person-name">Capataz</div><div class="person-role">Gestão diária da fazenda</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--pec)">AP</div><div class="person-info"><div class="person-name">Assistente de pecuária</div><div class="person-role">Controle do confinamento</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--pec);opacity:0.5">+</div><div class="person-info"><div class="person-name">Campeiros e equipe</div><div class="person-role">Manejo e operação</div></div></div>
+          <div class="flow-bar">
+            <div class="flow-title">Fluxo operacional</div>
+            <div class="flow-steps">
+              <span class="flow-step">Manejo</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Capataz</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Resp. pecuária</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Diretor</span>
+            </div>
+          </div>
+          <div class="flow-bar" style="border: 1.5px dashed var(--pec); background: var(--pec-light);">
+            <div class="flow-title" style="color:var(--pec)">⚠ Sugestão — fluxo documental</div>
+            <div class="flow-steps">
+              <span class="flow-step">GTA/NF/Sisbov</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Coord. controladoria</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Coord. financeira (só financeiro)</span>
+            </div>
+            <div style="font-size:0.58rem;color:var(--pec);margin-top:4px;font-style:italic;">Hoje a documentação de gado (Sisbov, GTAs, notas) cai diretamente na coordenação financeira. Sugestão: controladoria assume o controle documental, liberando o financeiro para atuar no escopo correto.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTOMOTIVA -->
+      <div class="unit" style="border-top: 3px solid var(--aut)">
+        <div class="unit-header">
+          <div class="unit-dot" style="background:var(--aut)"></div>
+          <div><h4>Unidade automotiva</h4><span>Coordenador automotiva</span></div>
+        </div>
+        <div class="unit-body">
+          <div class="person"><div class="person-avatar" style="background:var(--aut)">CT</div><div class="person-info"><div class="person-name">Coordenador técnico</div><div class="person-role">Direcionamento técnico manutenção</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--aut)">LM</div><div class="person-info"><div class="person-name">Líder técnico manutenção</div><div class="person-role">Supervisão oficina e mecânicos</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--aut)">AS</div><div class="person-info"><div class="person-name">Assistente adm. + PCM</div><div class="person-role">Planej. controle manutenção</div></div><span class="person-badge" style="background:var(--aut-light);color:var(--aut)">promovida</span></div>
+          <div class="person"><div class="person-avatar" style="background:var(--aut);opacity:0.5">+</div><div class="person-info"><div class="person-name">Mecânicos</div><div class="person-role">6 mecânicos sênior + aux. manutenção</div></div></div>
+          <div class="flow-bar">
+            <div class="flow-title">Modelo de OS padronizado</div>
+            <div class="flow-steps">
+              <span class="flow-step">Operador abre</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Mecânico executa</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Apontamento</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Fechamento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMINISTRATIVA -->
+      <div class="unit" style="border-top: 3px solid var(--adm)">
+        <div class="unit-header">
+          <div class="unit-dot" style="background:var(--adm)"></div>
+          <div><h4>Área administrativa</h4><span style="color:var(--adm);font-weight:600;font-size:0.6rem;">SEM COORDENAÇÃO EFETIVA</span></div>
+        </div>
+        <div class="unit-body">
+          <div class="person"><div class="person-avatar" style="background:var(--adm)">CC</div><div class="person-info"><div class="person-name">Coord. controladoria</div><div class="person-role">Cargo formal — sem autoridade efetiva</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--adm)">CF</div><div class="person-info"><div class="person-name">Coord. financeira</div><div class="person-role">Fluxo de caixa, pagamentos, fechamento</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--adm)">SR</div><div class="person-info"><div class="person-name">Supervisor de RH</div><div class="person-role">Gestão de pessoas e DP</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--adm)">AR</div><div class="person-info"><div class="person-name">Analista de RH</div><div class="person-role">Execução operacional RH/DP</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--adm)">ST</div><div class="person-info"><div class="person-name">Técnico SST</div><div class="person-role">Segurança e saúde do trabalho</div></div></div>
+          <div class="flow-bar" style="border: 1.5px dashed var(--adm); background: var(--adm-light);">
+            <div class="flow-title" style="color:var(--adm)">⚠ Ponto de atenção</div>
+            <div style="font-size:0.58rem;color:var(--adm);font-style:italic;line-height:1.4;">Na prática, cada função reporta diretamente ao diretor. A área não possui coordenação efetiva — A coordenação tem o cargo formal mas ainda não exerce autoridade sobre os demais. Isso gera sobrecarga no diretor e falta de integração entre financeiro, RH e controladoria.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPRIMENTOS -->
+      <div class="unit" style="border-top: 3px solid var(--sup)">
+        <div class="unit-header">
+          <div class="unit-dot" style="background:var(--sup)"></div>
+          <div><h4>Suprimentos</h4><span>Coordenadora de suprimentos</span></div>
+        </div>
+        <div class="unit-body">
+          <div class="person"><div class="person-avatar" style="background:var(--sup)">RT</div><div class="person-info"><div class="person-name">Resp. técnico almox.</div><div class="person-role">Processos, controle, conformidade</div></div><span class="person-badge" style="background:var(--sup-light);color:var(--sup)">contratado</span></div>
+          <div class="person"><div class="person-avatar" style="background:var(--sup)">AC</div><div class="person-info"><div class="person-name">Assistente de compras</div><div class="person-role">Cotações, insumos, diesel</div></div><span class="person-badge" style="background:var(--sup-light);color:var(--sup)">novo cargo</span></div>
+          <div class="person"><div class="person-avatar" style="background:var(--sup)">AL</div><div class="person-info"><div class="person-name">Almoxarife</div><div class="person-role">Estoque e recebimento</div></div></div>
+          <div class="person"><div class="person-avatar" style="background:var(--sup)">AA</div><div class="person-info"><div class="person-name">Assist. almoxarifado</div><div class="person-role">Apoio operacional</div></div></div>
+          <div class="flow-bar">
+            <div class="flow-title">Fluxo de insumos</div>
+            <div class="flow-steps">
+              <span class="flow-step">Demanda</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Almox confere</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Compras</span><span class="flow-arrow">→</span>
+              <span class="flow-step">Entrega</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Agropecuária Lerosa — Estrutura organizacional — Abril/2026
+</div>
+
+</body>
+</html>
